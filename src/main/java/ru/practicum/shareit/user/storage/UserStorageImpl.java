@@ -9,8 +9,8 @@ import java.util.List;
 
 @Repository
 public class UserStorageImpl implements UserStorage {
-    private int generatorId = 1;
     private final HashMap<Integer, User> users = new HashMap<>();
+    private int generatorId = 1;
 
     @Override
     public User add(User user) {

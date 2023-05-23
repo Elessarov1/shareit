@@ -33,20 +33,20 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User updateUser(int id, User user) {
-            user.setId(id);
-            String name = user.getName();
-            String email = user.getEmail();
-            User userFromStorage = userStorage.get(id);
-            if (name != null) {
-                userFromStorage.setName(name);
+        user.setId(id);
+        String name = user.getName();
+        String email = user.getEmail();
+        User userFromStorage = userStorage.get(id);
+        if (name != null) {
+            userFromStorage.setName(name);
+        }
+        if (email != null) {
+            if (isDuplicateEmail(user)) {
+                throw new ValidationException("Email already in used");
             }
-            if (email != null) {
-                if (isDuplicateEmail(user)) {
-                    throw new ValidationException("Email already in used");
-                }
-                userFromStorage.setEmail(email);
-            }
-            return userStorage.update(userFromStorage);
+            userFromStorage.setEmail(email);
+        }
+        return userStorage.update(userFromStorage);
     }
 
     @Override

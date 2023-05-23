@@ -6,6 +6,9 @@ import ru.practicum.shareit.user.dto.UserDto;
 import ru.practicum.shareit.user.model.User;
 
 public class Mappers {
+    private Mappers() {
+    }
+
     public static ItemDto itemToDto(Item item) {
         return ItemDto.builder()
                 .id(item.getId())
@@ -39,6 +42,4 @@ public class Mappers {
                 .email(userDto.getEmail())
                 .build();
     }
-
-    private Mappers() {}
 }

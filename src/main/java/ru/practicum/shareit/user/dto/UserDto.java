@@ -9,13 +9,16 @@ import javax.validation.constraints.NotBlank;
 @Data
 @Builder
 public class UserDto {
-    public interface NewUser {}
-    public interface UpdateUser{}
-
     private int id;
     @NotBlank(groups = {NewUser.class})
     private String name;
     @Email(groups = {NewUser.class, UpdateUser.class})
     @NotBlank(groups = {NewUser.class})
     private String email;
+
+    public interface NewUser {
+    }
+
+    public interface UpdateUser {
+    }
 }

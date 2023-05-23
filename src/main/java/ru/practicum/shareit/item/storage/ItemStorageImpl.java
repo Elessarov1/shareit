@@ -9,8 +9,8 @@ import java.util.List;
 
 @Repository
 public class ItemStorageImpl implements ItemStorage {
-    private int generatorId = 1;
     private final HashMap<Integer, Item> items = new HashMap<>();
+    private int generatorId = 1;
 
     @Override
     public List<Item> getAllItems() {

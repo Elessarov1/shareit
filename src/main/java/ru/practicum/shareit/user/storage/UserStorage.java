@@ -11,7 +11,7 @@ public interface UserStorage {
 
     List<User> getAllUsers();
 
-    boolean delete(int id);
+    boolean delete(long id);
 
-    User get(int id);
+    User get(long id);
 }

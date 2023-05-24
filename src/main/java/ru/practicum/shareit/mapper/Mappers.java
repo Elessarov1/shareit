@@ -1,15 +1,15 @@
 package ru.practicum.shareit.mapper;
 
+import lombok.experimental.UtilityClass;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.user.dto.UserDto;
 import ru.practicum.shareit.user.model.User;
 
+@UtilityClass
 public class Mappers {
-    private Mappers() {
-    }
 
-    public static ItemDto itemToDto(Item item) {
+    public ItemDto itemToDto(Item item) {
         return ItemDto.builder()
                 .id(item.getId())
                 .name(item.getName())
@@ -19,7 +19,7 @@ public class Mappers {
                 .build();
     }
 
-    public static Item dtoToItem(ItemDto itemDto) {
+    public Item dtoToItem(ItemDto itemDto) {
         return Item.builder()
                 .name(itemDto.getName())
                 .description(itemDto.getDescription())
@@ -28,7 +28,7 @@ public class Mappers {
                 .build();
     }
 
-    public static UserDto userToDto(User user) {
+    public UserDto userToDto(User user) {
         return UserDto.builder()
                 .id(user.getId())
                 .name(user.getName())
@@ -36,7 +36,7 @@ public class Mappers {
                 .build();
     }
 
-    public static User dtoToUser(UserDto userDto) {
+    public User dtoToUser(UserDto userDto) {
         return User.builder()
                 .name(userDto.getName())
                 .email(userDto.getEmail())

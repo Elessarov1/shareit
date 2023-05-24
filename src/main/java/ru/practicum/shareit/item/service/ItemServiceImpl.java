@@ -19,7 +19,7 @@ public class ItemServiceImpl implements ItemService {
     private final UserStorage userStorage;
 
     @Override
-    public List<Item> getOwnerItems(int ownerId) {
+    public List<Item> getOwnerItems(long ownerId) {
         return itemStorage.getAllItems()
                 .stream()
                 .filter(x -> x.getOwner()
@@ -28,12 +28,12 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
-    public Item getItem(int id) {
+    public Item getItem(long id) {
         return itemStorage.getItem(id);
     }
 
     @Override
-    public Item addItem(Item item, int ownerId) {
+    public Item addItem(Item item, long ownerId) {
         User owner = userStorage.get(ownerId);
         if (owner != null) {
             item.setOwner(owner);
@@ -43,19 +43,19 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
-    public Item updateItem(Item item, int ownerId, int id) {
+    public Item updateItem(Item item, long ownerId, long id) {
         Item currentItem = itemStorage.getItem(id);
-        if (currentItem.getOwner().getId() == ownerId) {
-            if (item.getName() != null) currentItem.setName(item.getName());
-            if (item.getDescription() != null) currentItem.setDescription(item.getDescription());
-            if (item.getAvailable() != null) currentItem.setAvailable(item.getAvailable());
-            return itemStorage.updateItem(id, currentItem);
+        if (currentItem.getOwner().getId() != ownerId) {
+            throw new NotFoundException("Wrong owner id");
         }
-        throw new NotFoundException("Wrong owner id");
+        if (item.getName() != null) currentItem.setName(item.getName());
+        if (item.getDescription() != null) currentItem.setDescription(item.getDescription());
+        if (item.getAvailable() != null) currentItem.setAvailable(item.getAvailable());
+        return itemStorage.updateItem(id, currentItem);
     }
 
     @Override
-    public boolean deleteItem(int id) {
+    public boolean deleteItem(long id) {
         return itemStorage.deleteItem(id);
     }
 

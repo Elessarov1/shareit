@@ -6,15 +6,16 @@ import ru.practicum.shareit.user.model.User;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicLong;
 
 @Repository
 public class UserStorageImpl implements UserStorage {
-    private final HashMap<Integer, User> users = new HashMap<>();
-    private int generatorId = 1;
+    private final HashMap<Long, User> users = new HashMap<>();
+    private final AtomicLong generatorId = new AtomicLong();
 
     @Override
     public User add(User user) {
-        user.setId(generatorId++);
+        user.setId(generatorId.incrementAndGet());
         users.put(user.getId(), user);
         return users.get(user.getId());
     }
@@ -30,12 +31,12 @@ public class UserStorageImpl implements UserStorage {
     }
 
     @Override
-    public boolean delete(int id) {
+    public boolean delete(long id) {
         return users.remove(id) != null;
     }
 
     @Override
-    public User get(int id) {
+    public User get(long id) {
         return users.get(id);
     }
 }

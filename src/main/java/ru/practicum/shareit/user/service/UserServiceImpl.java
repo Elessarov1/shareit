@@ -19,7 +19,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User getUserById(int id) {
+    public User getUserById(long id) {
         return userStorage.get(id);
     }
 
@@ -32,7 +32,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User updateUser(int id, User user) {
+    public User updateUser(long id, User user) {
         user.setId(id);
         String name = user.getName();
         String email = user.getEmail();
@@ -50,7 +50,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public boolean deleteUser(int id) {
+    public boolean deleteUser(long id) {
         return userStorage.delete(id);
     }
 

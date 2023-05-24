@@ -6,11 +6,12 @@ import ru.practicum.shareit.item.model.Item;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicLong;
 
 @Repository
 public class ItemStorageImpl implements ItemStorage {
-    private final HashMap<Integer, Item> items = new HashMap<>();
-    private int generatorId = 1;
+    private final HashMap<Long, Item> items = new HashMap<>();
+    private final AtomicLong generatorId = new AtomicLong();
 
     @Override
     public List<Item> getAllItems() {
@@ -18,24 +19,24 @@ public class ItemStorageImpl implements ItemStorage {
     }
 
     @Override
-    public Item getItem(int id) {
+    public Item getItem(long id) {
         return items.get(id);
     }
 
     @Override
     public Item addItem(Item item) {
-        item.setId(generatorId++);
+        item.setId(generatorId.incrementAndGet());
         items.put(item.getId(), item);
         return items.get(item.getId());
     }
 
     @Override
-    public Item updateItem(int id, Item item) {
+    public Item updateItem(long id, Item item) {
         return items.put(item.getId(), item);
     }
 
     @Override
-    public boolean deleteItem(int id) {
+    public boolean deleteItem(long id) {
         return items.remove(id) != null;
     }
 }

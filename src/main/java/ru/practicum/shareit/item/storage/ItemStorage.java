@@ -7,11 +7,11 @@ import java.util.List;
 public interface ItemStorage {
     List<Item> getAllItems();
 
-    Item getItem(int id);
+    Item getItem(long id);
 
     Item addItem(Item item);
 
-    Item updateItem(int id, Item item);
+    Item updateItem(long id, Item item);
 
-    boolean deleteItem(int id);
+    boolean deleteItem(long id);
 }

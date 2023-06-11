@@ -1,9 +1,15 @@
 package ru.practicum.shareit.mapper;
 
 import lombok.experimental.UtilityClass;
-import ru.practicum.shareit.booking.*;
+import ru.practicum.shareit.booking.dto.BookingRequestDto;
+import ru.practicum.shareit.booking.dto.BookingResponseDto;
+import ru.practicum.shareit.booking.model.Booking;
+import ru.practicum.shareit.booking.model.ShortBooking;
+import ru.practicum.shareit.booking.model.enums.Status;
+import ru.practicum.shareit.item.dto.CommentDto;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.dto.ItemResponseDto;
+import ru.practicum.shareit.item.model.Comment;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.user.dto.UserDto;
 import ru.practicum.shareit.user.model.User;
@@ -26,7 +32,7 @@ public class Mappers {
                 .build();
     }
 
-    public ItemResponseDto itemToResponseDto(Item item, List<Booking> bookingList) {
+    public ItemResponseDto itemToResponseDto(Item item, List<Booking> bookingList, List<CommentDto> comments) {
         ShortBooking lastShortBooking = null;
         ShortBooking nextShortBooking = null;
         if (!bookingList.isEmpty()) {
@@ -56,6 +62,7 @@ public class Mappers {
                 .request(item.getRequest() != null ? item.getRequest() : null)
                 .lastBooking(lastShortBooking)
                 .nextBooking(nextShortBooking)
+                .comments(comments)
                 .build();
     }
 
@@ -109,6 +116,22 @@ public class Mappers {
                 .item(booking.getItem())
                 .booker(booking.getBooker())
                 .status(booking.getStatus())
+                .build();
+    }
+
+    public CommentDto commentToDto(Comment comment) {
+        return CommentDto.builder()
+                .id(comment.getId())
+                .text(comment.getText())
+                .item(comment.getItem())
+                .authorName(comment.getAuthor().getName())
+                .created(comment.getCreated())
+                .build();
+    }
+
+    public Comment dtoToComment(CommentDto commentDto) {
+        return Comment.builder()
+                .text(commentDto.getText())
                 .build();
     }
 }

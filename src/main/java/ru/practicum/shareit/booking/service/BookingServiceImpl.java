@@ -1,9 +1,13 @@
-package ru.practicum.shareit.booking;
+package ru.practicum.shareit.booking.service;
 
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.springframework.stereotype.Service;
+import ru.practicum.shareit.booking.model.Booking;
+import ru.practicum.shareit.booking.model.enums.State;
+import ru.practicum.shareit.booking.model.enums.Status;
+import ru.practicum.shareit.booking.repository.BookingRepository;
 import ru.practicum.shareit.exception.BadRequestException;
 import ru.practicum.shareit.exception.NotFoundException;
 import ru.practicum.shareit.item.model.Item;
@@ -17,15 +21,17 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
-public class BookingService {
+public class BookingServiceImpl implements BookingService {
     BookingRepository bookingRepository;
     UserRepository userRepository;
     ItemRepository itemRepository;
 
+    @Override
     public Booking createBooking(Booking booking, long userId, long itemId) {
         return bookingRepository.save(validateBooking(booking, userId, itemId));
     }
 
+    @Override
     public Booking approveBooking(long userId, long bookingId, boolean approved) {
         isUserExist(userId);
         Booking booking = bookingRepository.findById(bookingId)
@@ -43,6 +49,7 @@ public class BookingService {
         return bookingRepository.save(booking);
     }
 
+    @Override
     public Booking getBooking(long userId, long bookingId) {
         Booking booking = bookingRepository.findById(bookingId)
                 .orElseThrow(() -> new NotFoundException("no such booking"));
@@ -54,6 +61,7 @@ public class BookingService {
         throw new NotFoundException("user must be owner or booker");
     }
 
+    @Override
     public List<Booking> getAllBookings(long userId, String state) {
         isUserExist(userId);
         LocalDateTime currentTime = LocalDateTime.now();
@@ -81,6 +89,7 @@ public class BookingService {
         }
     }
 
+    @Override
     public List<Booking> getAllBookingsByOwnerItems(long userId, String state) {
         isUserExist(userId);
         LocalDateTime currentTime = LocalDateTime.now();

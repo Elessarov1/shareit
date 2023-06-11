@@ -2,33 +2,31 @@ package ru.practicum.shareit.user.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import ru.practicum.shareit.exception.ValidationException;
+import ru.practicum.shareit.exception.NotFoundException;
 import ru.practicum.shareit.user.model.User;
-import ru.practicum.shareit.user.storage.UserStorage;
+import ru.practicum.shareit.user.repository.UserRepository;
 
 import java.util.List;
 
 @Service
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
-    private final UserStorage userStorage;
+    private final UserRepository userRepository;
 
     @Override
     public List<User> getAllUsers() {
-        return userStorage.getAllUsers();
+        return userRepository.findAll();
     }
 
     @Override
     public User getUserById(long id) {
-        return userStorage.get(id);
+        return userRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException("No such user"));
     }
 
     @Override
     public User addUser(User user) {
-        if (isDuplicateEmail(user)) {
-            throw new ValidationException("Email already in used");
-        }
-        return userStorage.add(user);
+        return userRepository.save(user);
     }
 
     @Override
@@ -36,27 +34,19 @@ public class UserServiceImpl implements UserService {
         user.setId(id);
         String name = user.getName();
         String email = user.getEmail();
-        User userFromStorage = userStorage.get(id);
+        User userFromStorage = userRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException("No such user"));
         if (name != null) {
             userFromStorage.setName(name);
         }
         if (email != null) {
-            if (isDuplicateEmail(user)) {
-                throw new ValidationException("Email already in used");
-            }
             userFromStorage.setEmail(email);
         }
-        return userStorage.update(userFromStorage);
+        return userRepository.save(userFromStorage);
     }
 
     @Override
-    public boolean deleteUser(long id) {
-        return userStorage.delete(id);
-    }
-
-    private boolean isDuplicateEmail(User user) {
-        return userStorage.getAllUsers().stream()
-                .filter(x -> x.getId() != user.getId())
-                .anyMatch(user1 -> user1.getEmail().equals(user.getEmail()));
+    public void deleteUser(long id) {
+        userRepository.deleteById(id);
     }
 }

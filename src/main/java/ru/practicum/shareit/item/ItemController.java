@@ -3,6 +3,7 @@ package ru.practicum.shareit.item;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.shareit.item.dto.ItemDto;
+import ru.practicum.shareit.item.dto.ItemResponseDto;
 import ru.practicum.shareit.item.service.ItemService;
 import ru.practicum.shareit.mapper.Mappers;
 
@@ -17,16 +18,14 @@ public class ItemController {
     private final ItemService itemService;
 
     @GetMapping
-    public List<ItemDto> getOwnerItems(@RequestHeader("X-Sharer-User-Id") long ownerId) {
-        return itemService.getOwnerItems(ownerId)
-                .stream()
-                .map(Mappers::itemToDto)
-                .collect(Collectors.toList());
+    public List<ItemResponseDto> getOwnerItems(@RequestHeader("X-Sharer-User-Id") long ownerId) {
+        return itemService.getOwnerItems(ownerId);
     }
 
     @GetMapping("/{id}")
-    public ItemDto getItem(@PathVariable long id) {
-        return Mappers.itemToDto(itemService.getItem(id));
+    public ItemResponseDto getItem(@RequestHeader("X-Sharer-User-Id") long ownerId,
+                                   @PathVariable long id) {
+        return itemService.getItem(id, ownerId);
     }
 
     @PostMapping
@@ -40,7 +39,6 @@ public class ItemController {
                               @PathVariable long id,
                               @RequestBody ItemDto itemDto) {
         return Mappers.itemToDto(itemService.updateItem(Mappers.dtoToItem(itemDto), ownerId, id));
-
     }
 
     @GetMapping("/search")

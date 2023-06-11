@@ -12,6 +12,7 @@ public class ErrorHandler {
     @ExceptionHandler
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public ErrorResponse handleThrowable(final Throwable e) {
+        e.printStackTrace();
         return new ErrorResponse("Произошла непредвиденная ошибка.");
     }
 
@@ -24,6 +25,7 @@ public class ErrorHandler {
     @ExceptionHandler
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public ErrorResponse handleNotFound(final NotFoundException e) {
+        e.printStackTrace();
         return new ErrorResponse(e.getMessage());
     }
 

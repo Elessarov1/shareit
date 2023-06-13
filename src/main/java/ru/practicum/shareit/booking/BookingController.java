@@ -11,7 +11,6 @@ import ru.practicum.shareit.mapper.Mappers;
 
 import javax.validation.Valid;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @RestController
 @RequiredArgsConstructor
@@ -44,20 +43,16 @@ public class BookingController {
     @GetMapping
     public List<BookingResponseDto> getAllBookings(@RequestHeader("X-Sharer-User-Id") long userId,
                                                    @RequestParam(
-                                                           value = "state", required = false,
+                                                           value = "state",
                                                            defaultValue = "ALL") String state) {
-        return bookingService.getAllBookings(userId, state).stream()
-                .map(Mappers::bookingToResponseDto)
-                .collect(Collectors.toList());
+        return Mappers.allBookingsToDto(bookingService.getAllBookings(userId, state));
     }
 
     @GetMapping("/owner")
     public List<BookingResponseDto> getAllBookingsByOwnerItems(@RequestHeader("X-Sharer-User-Id") long userId,
                                                                @RequestParam(
-                                                                       value = "state", required = false,
+                                                                       value = "state",
                                                                        defaultValue = "ALL") String state) {
-        return bookingService.getAllBookingsByOwnerItems(userId, state).stream()
-                .map(Mappers::bookingToResponseDto)
-                .collect(Collectors.toList());
+        return Mappers.allBookingsToDto(bookingService.getAllBookingsByOwnerItems(userId, state));
     }
 }

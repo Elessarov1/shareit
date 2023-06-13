@@ -9,7 +9,7 @@ import ru.practicum.shareit.booking.model.Booking;
 import ru.practicum.shareit.booking.repository.BookingRepository;
 import ru.practicum.shareit.exception.BadRequestException;
 import ru.practicum.shareit.exception.NotFoundException;
-import ru.practicum.shareit.item.dto.CommentDto;
+import ru.practicum.shareit.item.dto.CommentResponseDto;
 import ru.practicum.shareit.item.dto.ItemResponseDto;
 import ru.practicum.shareit.item.model.Comment;
 import ru.practicum.shareit.item.model.Item;
@@ -27,6 +27,7 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
+@Transactional(readOnly = true)
 public class ItemServiceImpl implements ItemService {
     ItemRepository itemRepository;
     UserRepository userRepository;
@@ -40,7 +41,7 @@ public class ItemServiceImpl implements ItemService {
                 .map(Item::getId)
                 .collect(Collectors.toList());
         List<Booking> bookingList = bookingRepository.findAllByOwnerIdAndItemIds(ownerId, itemIds);
-        List<CommentDto> comments = commentRepository.findAllByItemIds(itemIds).stream()
+        List<CommentResponseDto> comments = commentRepository.findAllByItemIds(itemIds).stream()
                 .map(Mappers::commentToDto)
                 .collect(Collectors.toList());
         return itemList.stream()
@@ -53,12 +54,13 @@ public class ItemServiceImpl implements ItemService {
         Item item = itemRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("No such item"));
         List<Booking> bookingList = bookingRepository.findAllByOwnerIdAndItemId(ownerId, id);
-        List<CommentDto> comments = commentRepository.findAllByItemId(id).stream()
+        List<CommentResponseDto> comments = commentRepository.findAllByItemId(id).stream()
                 .map(Mappers::commentToDto)
                 .collect(Collectors.toList());
         return Mappers.itemToResponseDto(item, bookingList, comments);
     }
 
+    @Transactional
     @Override
     public Item addItem(Item item, long ownerId) {
         User owner = userRepository.findById(ownerId)
@@ -67,6 +69,7 @@ public class ItemServiceImpl implements ItemService {
         return itemRepository.save(item);
     }
 
+    @Transactional
     @Override
     public Item updateItem(Item item, long ownerId, long id) {
         Item currentItem = itemRepository.findById(id)
@@ -74,13 +77,15 @@ public class ItemServiceImpl implements ItemService {
         if (currentItem.getOwner().getId() != ownerId) {
             throw new NotFoundException("Wrong owner id");
         }
-        if (item.getName() != null) currentItem.setName(item.getName());
-        if (item.getDescription() != null) currentItem.setDescription(item.getDescription());
+        if (item.getName() != null
+                && !item.getName().isBlank()) currentItem.setName(item.getName());
+        if (item.getDescription() != null
+                && !item.getDescription().isBlank()) currentItem.setDescription(item.getDescription());
         if (item.getAvailable() != null) currentItem.setAvailable(item.getAvailable());
-        currentItem.setId(id);
-        return itemRepository.save(currentItem);
+        return currentItem;
     }
 
+    @Transactional
     @Override
     public void deleteItem(long id) {
         itemRepository.deleteById(id);
@@ -88,7 +93,7 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     public List<Item> getItemByNameOrDescription(String text) {
-        if (text.isEmpty()) {
+        if (text.isBlank()) {
             return Collections.emptyList();
         }
         return itemRepository

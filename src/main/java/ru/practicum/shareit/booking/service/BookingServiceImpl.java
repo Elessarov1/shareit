@@ -4,6 +4,7 @@ import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.shareit.booking.model.Booking;
 import ru.practicum.shareit.booking.model.enums.State;
 import ru.practicum.shareit.booking.model.enums.Status;
@@ -21,16 +22,19 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
+@Transactional(readOnly = true)
 public class BookingServiceImpl implements BookingService {
     BookingRepository bookingRepository;
     UserRepository userRepository;
     ItemRepository itemRepository;
 
+    @Transactional
     @Override
     public Booking createBooking(Booking booking, long userId, long itemId) {
         return bookingRepository.save(validateBooking(booking, userId, itemId));
     }
 
+    @Transactional
     @Override
     public Booking approveBooking(long userId, long bookingId, boolean approved) {
         isUserExist(userId);
@@ -46,7 +50,7 @@ public class BookingServiceImpl implements BookingService {
         if (approved) booking.setStatus(Status.APPROVED);
         else booking.setStatus(Status.REJECTED);
 
-        return bookingRepository.save(booking);
+        return booking;
     }
 
     @Override

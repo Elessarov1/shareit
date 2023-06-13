@@ -6,7 +6,8 @@ import ru.practicum.shareit.booking.dto.BookingResponseDto;
 import ru.practicum.shareit.booking.model.Booking;
 import ru.practicum.shareit.booking.model.ShortBooking;
 import ru.practicum.shareit.booking.model.enums.Status;
-import ru.practicum.shareit.item.dto.CommentDto;
+import ru.practicum.shareit.item.dto.CommentRequestDto;
+import ru.practicum.shareit.item.dto.CommentResponseDto;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.dto.ItemResponseDto;
 import ru.practicum.shareit.item.model.Comment;
@@ -18,6 +19,7 @@ import java.time.LocalDateTime;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @UtilityClass
 public class Mappers {
@@ -32,7 +34,7 @@ public class Mappers {
                 .build();
     }
 
-    public ItemResponseDto itemToResponseDto(Item item, List<Booking> bookingList, List<CommentDto> comments) {
+    public ItemResponseDto itemToResponseDto(Item item, List<Booking> bookingList, List<CommentResponseDto> comments) {
         ShortBooking lastShortBooking = null;
         ShortBooking nextShortBooking = null;
         if (!bookingList.isEmpty()) {
@@ -113,25 +115,31 @@ public class Mappers {
                 .itemId(booking.getItem().getId())
                 .start(booking.getStart())
                 .end(booking.getEnd())
-                .item(booking.getItem())
-                .booker(booking.getBooker())
+                .item(new BookingResponseDto.Item(booking.getItem().getId(), booking.getItem().getName()))
+                .booker(new BookingResponseDto.User(booking.getBooker().getId(), booking.getBooker().getName()))
                 .status(booking.getStatus())
                 .build();
     }
 
-    public CommentDto commentToDto(Comment comment) {
-        return CommentDto.builder()
+    public CommentResponseDto commentToDto(Comment comment) {
+        return CommentResponseDto.builder()
                 .id(comment.getId())
                 .text(comment.getText())
-                .item(comment.getItem())
+                .item(new CommentResponseDto.Item(comment.getItem().getId(), comment.getItem().getName()))
                 .authorName(comment.getAuthor().getName())
                 .created(comment.getCreated())
                 .build();
     }
 
-    public Comment dtoToComment(CommentDto commentDto) {
+    public Comment dtoToComment(CommentRequestDto commentDto) {
         return Comment.builder()
                 .text(commentDto.getText())
                 .build();
+    }
+
+    public List<BookingResponseDto> allBookingsToDto(List<Booking> bookings) {
+        return bookings.stream()
+                .map(Mappers::bookingToResponseDto)
+                .collect(Collectors.toList());
     }
 }

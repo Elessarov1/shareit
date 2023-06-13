@@ -35,7 +35,7 @@ public class Item {
     @JoinColumn(name = "owner_id", referencedColumnName = "id")
     User owner;
 
-    @OneToOne
+    @ManyToOne
     @JoinColumn(name = "request_id", referencedColumnName = "id")
     ItemRequest request;
 

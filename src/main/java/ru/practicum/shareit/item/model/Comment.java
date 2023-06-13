@@ -28,7 +28,7 @@ public class Comment {
     @JoinColumn(name = "item_id", referencedColumnName = "id")
     Item item;
 
-    @OneToOne
+    @ManyToOne
     @JoinColumn(name = "author_id", referencedColumnName = "id")
     User author;
 

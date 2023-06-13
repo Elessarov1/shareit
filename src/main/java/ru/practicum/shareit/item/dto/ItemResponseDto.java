@@ -20,6 +20,6 @@ public class ItemResponseDto {
     ItemRequest request;
     ShortBooking lastBooking;
     ShortBooking nextBooking;
-    List<CommentDto> comments;
+    List<CommentResponseDto> comments;
 
 }

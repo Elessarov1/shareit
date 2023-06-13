@@ -4,7 +4,8 @@ import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.springframework.web.bind.annotation.*;
-import ru.practicum.shareit.item.dto.CommentDto;
+import ru.practicum.shareit.item.dto.CommentRequestDto;
+import ru.practicum.shareit.item.dto.CommentResponseDto;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.dto.ItemResponseDto;
 import ru.practicum.shareit.item.service.ItemService;
@@ -47,16 +48,16 @@ public class ItemController {
 
     @GetMapping("/search")
     public List<ItemDto> findItemByNameOrDescription(@RequestParam String text) {
-        return itemService.getItemByNameOrDescription(text.toLowerCase())
+        return itemService.getItemByNameOrDescription(text)
                 .stream()
                 .map(Mappers::itemToDto)
                 .collect(Collectors.toList());
     }
 
     @PostMapping("/{itemId}/comment")
-    public CommentDto addComment(@RequestHeader("X-Sharer-User-Id") long ownerId,
-                                 @PathVariable long itemId,
-                                 @Valid @RequestBody CommentDto commentDto) {
+    public CommentResponseDto addComment(@RequestHeader("X-Sharer-User-Id") long ownerId,
+                                         @PathVariable long itemId,
+                                         @Valid @RequestBody CommentRequestDto commentDto) {
         return Mappers.commentToDto(itemService.addComment(ownerId, itemId, Mappers.dtoToComment(commentDto)));
     }
 }

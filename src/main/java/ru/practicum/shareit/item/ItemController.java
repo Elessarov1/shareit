@@ -24,13 +24,15 @@ public class ItemController {
 
     @GetMapping
     public List<ItemResponseDto> getOwnerItems(@RequestHeader("X-Sharer-User-Id") long ownerId) {
-        return itemService.getOwnerItems(ownerId);
+        return itemService.getOwnerItems(ownerId).stream()
+                .map(Mappers::itemToResponseDto)
+                .collect(Collectors.toList());
     }
 
     @GetMapping("/{id}")
     public ItemResponseDto getItem(@RequestHeader("X-Sharer-User-Id") long ownerId,
                                    @PathVariable long id) {
-        return itemService.getItem(id, ownerId);
+        return Mappers.itemToResponseDto(itemService.getItem(id, ownerId));
     }
 
     @PostMapping

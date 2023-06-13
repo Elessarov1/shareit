@@ -15,10 +15,7 @@ import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.user.dto.UserDto;
 import ru.practicum.shareit.user.model.User;
 
-import java.time.LocalDateTime;
-import java.util.Comparator;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @UtilityClass
@@ -34,37 +31,16 @@ public class Mappers {
                 .build();
     }
 
-    public ItemResponseDto itemToResponseDto(Item item, List<Booking> bookingList, List<CommentResponseDto> comments) {
-        ShortBooking lastShortBooking = null;
-        ShortBooking nextShortBooking = null;
-        if (!bookingList.isEmpty()) {
-            LocalDateTime currentTime = LocalDateTime.now();
-            Optional<Booking> lastBooking = bookingList.stream()
-                    .filter(b -> b.getItem().getId() == item.getId() && b.getStatus().equals(Status.APPROVED))
-                    .filter(b -> (b.getStart().isBefore(currentTime) && b.getEnd().isAfter(currentTime))
-                            || b.getEnd().isBefore(currentTime))
-                    .sorted(Comparator.comparing(Booking::getId).reversed())
-                    .findFirst();
-
-            Optional<Booking> nextBooking = bookingList.stream()
-                    .filter(b -> b.getItem().getId() == item.getId() && b.getStatus().equals(Status.APPROVED))
-                    .sorted(Comparator.comparing(Booking::getStart))
-                    .filter(b -> b.getStart().isAfter(currentTime))
-                    .findFirst();
-            if (lastBooking.isPresent())
-                lastShortBooking = bookingToShortBooking(lastBooking.get());
-            if (nextBooking.isPresent())
-                nextShortBooking = bookingToShortBooking(nextBooking.get());
-        }
+    public ItemResponseDto itemToResponseDto(Item item) {
         return ItemResponseDto.builder()
                 .id(item.getId())
                 .name(item.getName())
                 .description(item.getDescription())
                 .available(item.getAvailable())
                 .request(item.getRequest() != null ? item.getRequest() : null)
-                .lastBooking(lastShortBooking)
-                .nextBooking(nextShortBooking)
-                .comments(comments)
+                .lastBooking(item.getLastBooking())
+                .nextBooking(item.getNextBooking())
+                .comments(item.getComments())
                 .build();
     }
 

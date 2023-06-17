@@ -6,19 +6,15 @@ import lombok.Data;
 import lombok.experimental.FieldDefaults;
 
 import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
-
+import javax.validation.constraints.Size;
 
 @Data
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class ItemDto {
-    long id;
+public class CommentRequestDto {
+    Long id;
+
     @NotBlank
-    String name;
-    @NotBlank
-    String description;
-    @NotNull
-    Boolean available;
-    //ItemRequest request;
+    @Size(max = 512)
+    String text;
 }

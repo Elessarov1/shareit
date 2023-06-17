@@ -2,61 +2,56 @@ package ru.practicum.shareit.user.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import ru.practicum.shareit.exception.ValidationException;
+import org.springframework.transaction.annotation.Transactional;
+import ru.practicum.shareit.exception.NotFoundException;
 import ru.practicum.shareit.user.model.User;
-import ru.practicum.shareit.user.storage.UserStorage;
+import ru.practicum.shareit.user.repository.UserRepository;
 
 import java.util.List;
 
 @Service
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class UserServiceImpl implements UserService {
-    private final UserStorage userStorage;
+    private final UserRepository userRepository;
 
     @Override
     public List<User> getAllUsers() {
-        return userStorage.getAllUsers();
+        return userRepository.findAll();
     }
 
     @Override
     public User getUserById(long id) {
-        return userStorage.get(id);
+        return userRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException("No such user"));
     }
 
+    @Transactional
     @Override
     public User addUser(User user) {
-        if (isDuplicateEmail(user)) {
-            throw new ValidationException("Email already in used");
-        }
-        return userStorage.add(user);
+        return userRepository.save(user);
     }
 
+    @Transactional
     @Override
     public User updateUser(long id, User user) {
         user.setId(id);
         String name = user.getName();
         String email = user.getEmail();
-        User userFromStorage = userStorage.get(id);
-        if (name != null) {
+        User userFromStorage = userRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException("No such user"));
+        if (name != null && !name.isBlank()) {
             userFromStorage.setName(name);
         }
-        if (email != null) {
-            if (isDuplicateEmail(user)) {
-                throw new ValidationException("Email already in used");
-            }
+        if (email != null && !email.isBlank()) {
             userFromStorage.setEmail(email);
         }
-        return userStorage.update(userFromStorage);
+        return userFromStorage;
     }
 
+    @Transactional
     @Override
-    public boolean deleteUser(long id) {
-        return userStorage.delete(id);
-    }
-
-    private boolean isDuplicateEmail(User user) {
-        return userStorage.getAllUsers().stream()
-                .filter(x -> x.getId() != user.getId())
-                .anyMatch(user1 -> user1.getEmail().equals(user.getEmail()));
+    public void deleteUser(long id) {
+        userRepository.deleteById(id);
     }
 }

@@ -122,9 +122,8 @@ public class ItemServiceImpl implements ItemService {
 
             Optional<Booking> nextOptBooking = bookingList.stream()
                     .filter(b -> b.getItem().getId() == item.getId() && b.getStatus().equals(Status.APPROVED))
-                    .sorted(Comparator.comparing(Booking::getStart))
                     .filter(b -> b.getStart().isAfter(currentTime))
-                    .findFirst();
+                    .reduce((first, second) -> second);
             if (lastOptBooking.isPresent())
                 lastBooking = lastOptBooking.get();
             if (nextOptBooking.isPresent())

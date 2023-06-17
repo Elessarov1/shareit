@@ -5,7 +5,6 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.experimental.FieldDefaults;
 import ru.practicum.shareit.booking.model.ShortBooking;
-import ru.practicum.shareit.request.ItemRequest;
 
 import java.util.List;
 
@@ -17,7 +16,7 @@ public class ItemResponseDto {
     String name;
     String description;
     Boolean available;
-    ItemRequest request;
+    //ItemRequest request;
     ShortBooking lastBooking;
     ShortBooking nextBooking;
     List<CommentResponseDto> comments;

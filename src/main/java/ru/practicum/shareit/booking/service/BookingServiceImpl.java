@@ -129,8 +129,7 @@ public class BookingServiceImpl implements BookingService {
                 .orElseThrow(() -> new NotFoundException("no such item"));
         booking.setItem(item);
 
-        if (booking.getStart().isAfter(booking.getEnd())
-                || booking.getStart().equals(booking.getEnd())) {
+        if (!booking.getStart().isBefore(booking.getEnd())) {
             throw new BadRequestException("wrong booking time");
         }
         if (!item.getAvailable()) {

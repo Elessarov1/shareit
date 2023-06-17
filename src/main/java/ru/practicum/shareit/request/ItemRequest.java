@@ -20,8 +20,6 @@ public class ItemRequest {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     long id;
-
-    @Column
     String description;
 
     @ManyToOne

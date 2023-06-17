@@ -2,8 +2,7 @@ package ru.practicum.shareit.item.model;
 
 import lombok.*;
 import lombok.experimental.FieldDefaults;
-import ru.practicum.shareit.booking.model.ShortBooking;
-import ru.practicum.shareit.item.dto.CommentResponseDto;
+import ru.practicum.shareit.booking.model.Booking;
 import ru.practicum.shareit.request.ItemRequest;
 import ru.practicum.shareit.user.model.User;
 
@@ -25,13 +24,8 @@ public class Item {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     long id;
 
-    @Column
     String name;
-
-    @Column
     String description;
-
-    @Column
     Boolean available;
 
     @ManyToOne
@@ -43,12 +37,12 @@ public class Item {
     ItemRequest request;
 
     @Transient
-    ShortBooking lastBooking;
+    Booking lastBooking;
 
     @Transient
-    ShortBooking nextBooking;
+    Booking nextBooking;
 
     @Transient
-    List<CommentResponseDto> comments;
+    List<Comment> comments;
 
 }

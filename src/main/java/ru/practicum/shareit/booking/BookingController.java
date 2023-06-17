@@ -6,8 +6,8 @@ import lombok.experimental.FieldDefaults;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.shareit.booking.dto.BookingRequestDto;
 import ru.practicum.shareit.booking.dto.BookingResponseDto;
+import ru.practicum.shareit.booking.mapper.BookingMapper;
 import ru.practicum.shareit.booking.service.BookingService;
-import ru.practicum.shareit.mapper.Mappers;
 
 import javax.validation.Valid;
 import java.util.List;
@@ -22,22 +22,22 @@ public class BookingController {
     @PostMapping
     public BookingResponseDto createBooking(@RequestHeader("X-Sharer-User-Id") long userId,
                                             @Valid @RequestBody BookingRequestDto bookingRequestDto) {
-        return Mappers.bookingToResponseDto(
+        return BookingMapper.bookingToResponseDto(
                 bookingService.createBooking(
-                        Mappers.dtoToBooking(bookingRequestDto), userId, bookingRequestDto.getItemId()));
+                        BookingMapper.dtoToBooking(bookingRequestDto), userId, bookingRequestDto.getItemId()));
     }
 
     @PatchMapping("/{bookingId}")
     public BookingResponseDto approveBooking(@RequestHeader("X-Sharer-User-Id") long userId,
                                              @PathVariable long bookingId,
                                              @RequestParam boolean approved) {
-        return Mappers.bookingToResponseDto(bookingService.approveBooking(userId, bookingId, approved));
+        return BookingMapper.bookingToResponseDto(bookingService.approveBooking(userId, bookingId, approved));
     }
 
     @GetMapping("/{bookingId}")
     public BookingResponseDto getBooking(@RequestHeader("X-Sharer-User-Id") long userId,
                                          @PathVariable long bookingId) {
-        return Mappers.bookingToResponseDto(bookingService.getBooking(userId, bookingId));
+        return BookingMapper.bookingToResponseDto(bookingService.getBooking(userId, bookingId));
     }
 
     @GetMapping
@@ -45,7 +45,7 @@ public class BookingController {
                                                    @RequestParam(
                                                            value = "state",
                                                            defaultValue = "ALL") String state) {
-        return Mappers.allBookingsToDto(bookingService.getAllBookings(userId, state));
+        return BookingMapper.allBookingsToDto(bookingService.getAllBookings(userId, state));
     }
 
     @GetMapping("/owner")
@@ -53,6 +53,6 @@ public class BookingController {
                                                                @RequestParam(
                                                                        value = "state",
                                                                        defaultValue = "ALL") String state) {
-        return Mappers.allBookingsToDto(bookingService.getAllBookingsByOwnerItems(userId, state));
+        return BookingMapper.allBookingsToDto(bookingService.getAllBookingsByOwnerItems(userId, state));
     }
 }

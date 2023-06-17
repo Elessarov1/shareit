@@ -6,17 +6,14 @@ import lombok.experimental.FieldDefaults;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.shareit.booking.model.Booking;
-import ru.practicum.shareit.booking.model.ShortBooking;
 import ru.practicum.shareit.booking.model.enums.Status;
 import ru.practicum.shareit.booking.repository.BookingRepository;
 import ru.practicum.shareit.exception.BadRequestException;
 import ru.practicum.shareit.exception.NotFoundException;
-import ru.practicum.shareit.item.dto.CommentResponseDto;
 import ru.practicum.shareit.item.model.Comment;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.item.repository.CommentRepository;
 import ru.practicum.shareit.item.repository.ItemRepository;
-import ru.practicum.shareit.mapper.Mappers;
 import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.user.repository.UserRepository;
 
@@ -44,11 +41,9 @@ public class ItemServiceImpl implements ItemService {
                 .map(Item::getId)
                 .collect(Collectors.toList());
         List<Booking> bookingList = bookingRepository.findAllByOwnerIdAndItemIds(ownerId, itemIds);
-        List<CommentResponseDto> comments = commentRepository.findAllByItemIds(itemIds).stream()
-                .map(Mappers::commentToDto)
-                .collect(Collectors.toList());
+        List<Comment> comments = commentRepository.findAllByItemIds(itemIds);
         return itemList.stream()
-                .map(item -> setShortBookingsAndComments(item, bookingList, comments))
+                .map(item -> setBookingsAndComments(item, bookingList, comments))
                 .collect(Collectors.toList());
     }
 
@@ -57,10 +52,8 @@ public class ItemServiceImpl implements ItemService {
         Item item = itemRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("No such item"));
         List<Booking> bookingList = bookingRepository.findAllByOwnerIdAndItemId(ownerId, id);
-        List<CommentResponseDto> comments = commentRepository.findAllByItemId(id).stream()
-                .map(Mappers::commentToDto)
-                .collect(Collectors.toList());
-        return setShortBookingsAndComments(item, bookingList, comments);
+        List<Comment> comments = commentRepository.findAllByItemId(id);
+        return setBookingsAndComments(item, bookingList, comments);
     }
 
     @Transactional
@@ -81,9 +74,9 @@ public class ItemServiceImpl implements ItemService {
             throw new NotFoundException("Wrong owner id");
         }
         if (item.getName() != null
-                && !item.getName().isBlank()) currentItem.setName(item.getName());
+                && (!item.getName().isBlank())) currentItem.setName(item.getName());
         if (item.getDescription() != null
-                && !item.getDescription().isBlank()) currentItem.setDescription(item.getDescription());
+                && (!item.getDescription().isBlank())) currentItem.setDescription(item.getDescription());
         if (item.getAvailable() != null) currentItem.setAvailable(item.getAvailable());
         return currentItem;
     }
@@ -100,7 +93,7 @@ public class ItemServiceImpl implements ItemService {
             return Collections.emptyList();
         }
         return itemRepository
-                .findByNameContainingIgnoreCaseOrDescriptionContainingIgnoreCaseAndAvailableTrue(text, text);
+                .findByNameContainingIgnoreCaseOrDescriptionContainingIgnoreCaseAndAvailable(text, text, true);
     }
 
     @Transactional
@@ -117,26 +110,25 @@ public class ItemServiceImpl implements ItemService {
         return commentRepository.save(comment);
     }
 
-    private Item setShortBookingsAndComments(Item item, List<Booking> bookingList, List<CommentResponseDto> comments) {
-        ShortBooking lastShortBooking = null;
-        ShortBooking nextShortBooking = null;
+    private Item setBookingsAndComments(Item item, List<Booking> bookingList, List<Comment> comments) {
+        Booking lastBooking = null;
+        Booking nextBooking = null;
         if (!bookingList.isEmpty()) {
             LocalDateTime currentTime = LocalDateTime.now();
-            Optional<Booking> lastBooking = bookingList.stream()
+            Optional<Booking> lastOptBooking = bookingList.stream()
                     .filter(b -> b.getItem().getId() == item.getId() && b.getStatus().equals(Status.APPROVED))
-                    .filter(b -> (b.getStart().isBefore(currentTime) && b.getEnd().isAfter(currentTime))
-                            || b.getEnd().isBefore(currentTime))
+                    .filter(b -> !b.getStart().isAfter(currentTime))
                     .findFirst();
 
-            Optional<Booking> nextBooking = bookingList.stream()
+            Optional<Booking> nextOptBooking = bookingList.stream()
                     .filter(b -> b.getItem().getId() == item.getId() && b.getStatus().equals(Status.APPROVED))
                     .sorted(Comparator.comparing(Booking::getStart))
                     .filter(b -> b.getStart().isAfter(currentTime))
                     .findFirst();
-            if (lastBooking.isPresent())
-                lastShortBooking = Mappers.bookingToShortBooking(lastBooking.get());
-            if (nextBooking.isPresent())
-                nextShortBooking = Mappers.bookingToShortBooking(nextBooking.get());
+            if (lastOptBooking.isPresent())
+                lastBooking = lastOptBooking.get();
+            if (nextOptBooking.isPresent())
+                nextBooking = nextOptBooking.get();
         }
         return Item.builder()
                 .id(item.getId())
@@ -144,8 +136,8 @@ public class ItemServiceImpl implements ItemService {
                 .description(item.getDescription())
                 .available(item.getAvailable())
                 .request(item.getRequest() != null ? item.getRequest() : null)
-                .lastBooking(lastShortBooking)
-                .nextBooking(nextShortBooking)
+                .lastBooking(lastBooking)
+                .nextBooking(nextBooking)
                 .comments(comments)
                 .build();
     }

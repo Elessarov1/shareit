@@ -12,7 +12,8 @@ CREATE TABLE IF NOT EXISTS users (
 
 CREATE TABLE IF NOT EXISTS requests (
     id              BIGSERIAL PRIMARY KEY,
-    description     VARCHAR(512),
+    description     VARCHAR(512) NOT NULL,
+    created         TIMESTAMP,
     requester_id    BIGINT NOT NULL REFERENCES users(id) ON DELETE CASCADE
 );
 

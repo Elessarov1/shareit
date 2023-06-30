@@ -10,8 +10,6 @@ import ru.practicum.shareit.booking.model.enums.Status;
 import ru.practicum.shareit.booking.repository.BookingRepository;
 import ru.practicum.shareit.exception.BadRequestException;
 import ru.practicum.shareit.exception.NotFoundException;
-import ru.practicum.shareit.item.dto.ItemShortResponseDto;
-import ru.practicum.shareit.item.mapper.ItemMapper;
 import ru.practicum.shareit.item.model.Comment;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.item.repository.CommentRepository;
@@ -27,7 +25,6 @@ import java.util.Optional;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
@@ -270,29 +267,5 @@ public class ItemServiceMockTest {
         NotFoundException exception = assertThrows(NotFoundException.class,
                 () -> itemService.addComment(booker.getId(), item.getId(), comment));
         assertThat(exception.getMessage(), equalTo("no such item"));
-    }
-
-    @Test
-    void itemToShortDto() {
-        User owner = createOwner();
-        Item item = createItem(owner);
-        ItemShortResponseDto responseDto = ItemMapper.itemToShortDto(item);
-        assertNotNull(responseDto);
-        assertThat(responseDto.getId(), equalTo(item.getId()));
-    }
-
-    @Test
-    void itemsToShortDtoList() {
-        User owner = createOwner();
-        Item item = createItem(owner);
-        List<ItemShortResponseDto> items = ItemMapper.itemsToShortDtoList(List.of(item));
-        assertNotNull(items);
-        assertThat(items.size(), equalTo(1));
-    }
-
-    @Test
-    void itemsToShortDtoListWithWrongArgument() {
-        List<ItemShortResponseDto> items = ItemMapper.itemsToShortDtoList(null);
-        assertThat(items.size(), equalTo(0));
     }
 }

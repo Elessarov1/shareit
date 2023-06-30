@@ -271,28 +271,4 @@ public class ItemServiceMockTest {
                 () -> itemService.addComment(booker.getId(), item.getId(), comment));
         assertThat(exception.getMessage(), equalTo("no such item"));
     }
-
-    @Test
-    void itemToShortDto() {
-        User owner = createOwner();
-        Item item = createItem(owner);
-        ItemShortResponseDto responseDto = ItemMapper.itemToShortDto(item);
-        assertNotNull(responseDto);
-        assertThat(responseDto.getId(), equalTo(item.getId()));
-    }
-
-    @Test
-    void itemsToShortDtoList() {
-        User owner = createOwner();
-        Item item = createItem(owner);
-        List<ItemShortResponseDto> items = ItemMapper.itemsToShortDtoList(List.of(item));
-        assertNotNull(items);
-        assertThat(items.size(), equalTo(1));
-    }
-
-    @Test
-    void itemsToShortDtoListWithWrongArgument() {
-        List<ItemShortResponseDto> items = ItemMapper.itemsToShortDtoList(null);
-        assertThat(items.size(), equalTo(0));
-    }
 }

@@ -10,6 +10,4 @@ public interface ItemRepository extends JpaRepository<Item, Long> {
 
     List<Item> findByNameContainingIgnoreCaseOrDescriptionContainingIgnoreCaseAndAvailable(
             String name, String description, boolean available);
-
-    List<Item> findAllByRequestId(long requestId);
 }

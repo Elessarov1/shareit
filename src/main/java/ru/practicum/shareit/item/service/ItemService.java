@@ -14,8 +14,6 @@ public interface ItemService {
 
     Item updateItem(Item item, long ownerId, long id);
 
-    void deleteItem(long id);
-
     List<Item> getItemByNameOrDescription(String text);
 
     Comment addComment(long ownerId, long itemId, Comment comment);

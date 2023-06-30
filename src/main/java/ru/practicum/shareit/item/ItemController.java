@@ -11,8 +11,8 @@ import ru.practicum.shareit.item.dto.ItemResponseDto;
 import ru.practicum.shareit.item.mapper.CommentMapper;
 import ru.practicum.shareit.item.mapper.ItemMapper;
 import ru.practicum.shareit.item.service.ItemService;
-import ru.practicum.shareit.request.RequestItem;
-import ru.practicum.shareit.request.RequestItemRepository;
+import ru.practicum.shareit.request.model.RequestItem;
+import ru.practicum.shareit.request.repository.RequestItemRepository;
 
 import javax.validation.Valid;
 import java.util.List;

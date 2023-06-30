@@ -7,6 +7,9 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.shareit.request.dto.RequestItemDto;
 import ru.practicum.shareit.request.dto.RequestItemResponseDto;
+import ru.practicum.shareit.request.mapper.RequestMapper;
+import ru.practicum.shareit.request.model.RequestItem;
+import ru.practicum.shareit.request.service.RequestItemService;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;

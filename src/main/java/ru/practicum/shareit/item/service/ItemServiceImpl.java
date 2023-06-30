@@ -80,12 +80,6 @@ public class ItemServiceImpl implements ItemService {
         return currentItem;
     }
 
-    @Transactional
-    @Override
-    public void deleteItem(long id) {
-        itemRepository.deleteById(id);
-    }
-
     @Override
     public List<Item> getItemByNameOrDescription(String text) {
         if (text.isBlank()) {

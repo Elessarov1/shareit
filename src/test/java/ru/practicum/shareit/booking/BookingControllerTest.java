@@ -252,7 +252,7 @@ public class BookingControllerTest {
     void BookingToShortBooking() {
         ShortBooking shortBooking;
         Booking booking = createBooking();
-        shortBooking = BookingMapper.bookingToShortBooking(booking);
+        shortBooking = BookingMapper.bookingToShort(booking);
         assertNotNull(shortBooking);
         assertThat(shortBooking.getId(), equalTo(booking.getId()));
     }

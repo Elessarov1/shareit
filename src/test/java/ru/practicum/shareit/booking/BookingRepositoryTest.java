@@ -36,7 +36,6 @@ class BookingRepositoryTest {
     List<Booking> bookings;
     List<Booking> emptyList;
     PageRequest page = PageRequest.of(0, 3);
-    ;
 
     static User createOwner() {
         return User.builder()

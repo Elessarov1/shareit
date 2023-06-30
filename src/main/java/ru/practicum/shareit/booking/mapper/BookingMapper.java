@@ -20,7 +20,7 @@ public class BookingMapper {
                 .build();
     }
 
-    public ShortBooking bookingToShort(Booking booking) {
+    public ShortBooking bookingToShortBooking(Booking booking) {
         return ShortBooking.builder()
                 .id(booking.getId())
                 .start(booking.getStart())

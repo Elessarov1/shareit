@@ -11,6 +11,8 @@ import ru.practicum.shareit.item.dto.ItemResponseDto;
 import ru.practicum.shareit.item.mapper.CommentMapper;
 import ru.practicum.shareit.item.mapper.ItemMapper;
 import ru.practicum.shareit.item.service.ItemService;
+import ru.practicum.shareit.request.model.RequestItem;
+import ru.practicum.shareit.request.repository.RequestItemRepository;
 
 import javax.validation.Valid;
 import java.util.List;
@@ -22,6 +24,7 @@ import java.util.stream.Collectors;
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class ItemController {
     ItemService itemService;
+    RequestItemRepository requestItemRepository;
 
     @GetMapping
     public List<ItemResponseDto> getOwnerItems(@RequestHeader("X-Sharer-User-Id") long ownerId) {
@@ -39,14 +42,22 @@ public class ItemController {
     @PostMapping
     public ItemDto addItem(@RequestHeader("X-Sharer-User-Id") long ownerId,
                            @Valid @RequestBody ItemDto itemDto) {
-        return ItemMapper.itemToDto(itemService.addItem(ItemMapper.dtoToItem(itemDto), ownerId));
+        RequestItem requestItem = null;
+        if (itemDto.getRequestId() != null) {
+            requestItem = requestItemRepository.findById(itemDto.getRequestId()).orElse(null);
+        }
+        return ItemMapper.itemToDto(itemService.addItem(ItemMapper.dtoToItem(itemDto, requestItem), ownerId));
     }
 
     @PatchMapping("/{id}")
     public ItemDto updateItem(@RequestHeader("X-Sharer-User-Id") long ownerId,
                               @PathVariable long id,
                               @RequestBody ItemDto itemDto) {
-        return ItemMapper.itemToDto(itemService.updateItem(ItemMapper.dtoToItem(itemDto), ownerId, id));
+        RequestItem requestItem = null;
+        if (itemDto.getRequestId() != null) {
+            requestItem = requestItemRepository.findById(itemDto.getRequestId()).orElse(null);
+        }
+        return ItemMapper.itemToDto(itemService.updateItem(ItemMapper.dtoToItem(itemDto, requestItem), ownerId, id));
     }
 
     @GetMapping("/search")

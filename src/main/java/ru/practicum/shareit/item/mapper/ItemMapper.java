@@ -5,8 +5,10 @@ import ru.practicum.shareit.booking.mapper.BookingMapper;
 import ru.practicum.shareit.booking.model.Booking;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.dto.ItemResponseDto;
+import ru.practicum.shareit.item.dto.ItemShortResponseDto;
 import ru.practicum.shareit.item.model.Comment;
 import ru.practicum.shareit.item.model.Item;
+import ru.practicum.shareit.request.model.RequestItem;
 
 import java.util.Collections;
 import java.util.List;
@@ -21,7 +23,7 @@ public class ItemMapper {
                 .name(item.getName())
                 .description(item.getDescription())
                 .available(item.getAvailable())
-                //.request(item.getRequest() != null ? item.getRequest() : null)
+                .requestId(item.getRequest() != null ? item.getRequest().getId() : null)
                 .build();
     }
 
@@ -34,20 +36,40 @@ public class ItemMapper {
                 .name(item.getName())
                 .description(item.getDescription())
                 .available(item.getAvailable())
-                //.request(item.getRequest() != null ? item.getRequest() : null)
+                .request(item.getRequest() != null ? item.getRequest() : null)
                 .lastBooking(last.isPresent() ? BookingMapper.bookingToShortBooking(item.getLastBooking()) : null)
                 .nextBooking(next.isPresent() ? BookingMapper.bookingToShortBooking(item.getNextBooking()) : null)
                 .comments(!comments.isEmpty() ? comments.stream()
-                        .map(CommentMapper::commentToDto).collect(Collectors.toList()) : Collections.emptyList())
+                        .map(CommentMapper::commentToDto)
+                        .collect(Collectors.toList()) : Collections.emptyList())
                 .build();
     }
 
-    public Item dtoToItem(ItemDto itemDto) {
+    public Item dtoToItem(ItemDto itemDto, RequestItem requestItem) {
         return Item.builder()
                 .name(itemDto.getName())
                 .description(itemDto.getDescription())
                 .available(itemDto.getAvailable())
-                //.request(itemDto.getRequest())
+                .request(requestItem)
                 .build();
+    }
+
+    public ItemShortResponseDto itemToShortDto(Item item) {
+        return ItemShortResponseDto.builder()
+                .id(item.getId())
+                .name(item.getName())
+                .description(item.getDescription())
+                .available(item.getAvailable())
+                .requestId(item.getRequest().getId())
+                .build();
+    }
+
+    public List<ItemShortResponseDto> itemsToShortDtoList(List<Item> items) {
+        if (items == null) {
+            return Collections.emptyList();
+        }
+        return items.stream()
+                .map(ItemMapper::itemToShortDto)
+                .collect(Collectors.toList());
     }
 }

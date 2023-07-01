@@ -19,7 +19,6 @@ import ru.practicum.shareit.user.repository.UserRepository;
 
 import java.time.LocalDateTime;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -79,12 +78,6 @@ public class ItemServiceImpl implements ItemService {
                 && (!item.getDescription().isBlank())) currentItem.setDescription(item.getDescription());
         if (item.getAvailable() != null) currentItem.setAvailable(item.getAvailable());
         return currentItem;
-    }
-
-    @Transactional
-    @Override
-    public void deleteItem(long id) {
-        itemRepository.deleteById(id);
     }
 
     @Override

@@ -19,13 +19,12 @@ import java.util.List;
 @RequiredArgsConstructor
 @RequestMapping(path = "/bookings")
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
-@Validated
 public class BookingController {
     BookingService bookingService;
 
     @PostMapping
     public BookingResponseDto createBooking(@RequestHeader("X-Sharer-User-Id") long userId,
-                                            @Valid @RequestBody BookingRequestDto bookingRequestDto) {
+                                            @RequestBody BookingRequestDto bookingRequestDto) {
         return BookingMapper.bookingToResponseDto(
                 bookingService.createBooking(
                         BookingMapper.dtoToBooking(bookingRequestDto), userId, bookingRequestDto.getItemId()));
@@ -45,18 +44,18 @@ public class BookingController {
     }
 
     @GetMapping
-    public List<BookingResponseDto> getAllBookings(@RequestHeader("X-Sharer-User-Id") long userId,
+    public List<BookingResponseDto> getAllBookings(@RequestHeader("X-Sharer-User-Id")  long userId,
                                                    @RequestParam(defaultValue = "ALL") String state,
-                                                   @RequestParam(defaultValue = "0") @PositiveOrZero int from,
-                                                   @RequestParam(defaultValue = "10") @Positive int size) {
+                                                   @RequestParam(defaultValue = "0")   int from,
+                                                   @RequestParam(defaultValue = "10")  int size) {
         return BookingMapper.allBookingsToDto(bookingService.getAllBookings(userId, state, from, size));
     }
 
     @GetMapping("/owner")
-    public List<BookingResponseDto> getAllBookingsByOwnerItems(@RequestHeader("X-Sharer-User-Id") long userId,
+    public List<BookingResponseDto> getAllBookingsByOwnerItems(@RequestHeader("X-Sharer-User-Id")  long userId,
                                                                @RequestParam(defaultValue = "ALL") String state,
-                                                               @RequestParam(defaultValue = "0") @PositiveOrZero int from,
-                                                               @RequestParam(defaultValue = "10") @Positive int size) {
+                                                               @RequestParam(defaultValue = "0")   int from,
+                                                               @RequestParam(defaultValue = "10")  int size) {
         return BookingMapper.allBookingsToDto(bookingService.getAllBookingsByOwnerItems(userId, state, from, size));
     }
 }

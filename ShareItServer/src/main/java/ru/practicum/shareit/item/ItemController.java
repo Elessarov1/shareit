@@ -14,7 +14,6 @@ import ru.practicum.shareit.item.service.ItemService;
 import ru.practicum.shareit.request.model.RequestItem;
 import ru.practicum.shareit.request.repository.RequestItemRepository;
 
-import javax.validation.Valid;
 import java.util.List;
 import java.util.stream.Collectors;
 

@@ -29,30 +29,30 @@ public class BookingController {
 
     @PatchMapping("/{bookingId}")
     public ResponseEntity<Object> approveBooking(@RequestHeader("X-Sharer-User-Id") long userId,
-                                             @PathVariable long bookingId,
-                                             @RequestParam boolean approved) {
+                                                 @PathVariable long bookingId,
+                                                 @RequestParam boolean approved) {
         return bookingClient.approveBooking(userId, bookingId, approved);
     }
 
     @GetMapping("/{bookingId}")
     public ResponseEntity<Object> getBooking(@RequestHeader("X-Sharer-User-Id") long userId,
-                                         @PathVariable long bookingId) {
+                                             @PathVariable long bookingId) {
         return bookingClient.getBooking(userId, bookingId);
     }
 
     @GetMapping
     public ResponseEntity<Object> getAllBookings(@RequestHeader("X-Sharer-User-Id") long userId,
-                                                   @RequestParam(defaultValue = "ALL") String state,
-                                                   @RequestParam(defaultValue = "0") @PositiveOrZero int from,
-                                                   @RequestParam(defaultValue = "10") @Positive int size) {
+                                                 @RequestParam(defaultValue = "ALL") String state,
+                                                 @RequestParam(defaultValue = "0") @PositiveOrZero int from,
+                                                 @RequestParam(defaultValue = "10") @Positive int size) {
         return bookingClient.getAllBookings(userId, state, from, size);
     }
 
     @GetMapping("/owner")
     public ResponseEntity<Object> getAllBookingsByOwnerItems(@RequestHeader("X-Sharer-User-Id") long userId,
-                                                               @RequestParam(defaultValue = "ALL") BookingState state,
-                                                               @RequestParam(defaultValue = "0") @PositiveOrZero int from,
-                                                               @RequestParam(defaultValue = "10") @Positive int size) {
+                                                             @RequestParam(defaultValue = "ALL") BookingState state,
+                                                             @RequestParam(defaultValue = "0") @PositiveOrZero int from,
+                                                             @RequestParam(defaultValue = "10") @Positive int size) {
         return bookingClient.getAllBookingsByOwnerItems(userId, state, from, size);
     }
 }

@@ -3,7 +3,6 @@ package ru.practicum.shareit.request;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.shareit.request.dto.RequestItemDto;
 import ru.practicum.shareit.request.dto.RequestItemResponseDto;
@@ -11,10 +10,6 @@ import ru.practicum.shareit.request.mapper.RequestMapper;
 import ru.practicum.shareit.request.model.RequestItem;
 import ru.practicum.shareit.request.service.RequestItemService;
 
-import javax.validation.Valid;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Positive;
-import javax.validation.constraints.PositiveOrZero;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -42,7 +37,7 @@ public class RequestItemController {
 
     @GetMapping("/all")
     public List<RequestItemResponseDto> getAllRequests(@RequestHeader("X-Sharer-User-Id") Long ownerId,
-                                                       @RequestParam(defaultValue = "0")  int from,
+                                                       @RequestParam(defaultValue = "0") int from,
                                                        @RequestParam(defaultValue = "10") int size) {
         return requestItemService.getAllRequests(ownerId, from, size)
                 .stream()

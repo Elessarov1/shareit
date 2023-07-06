@@ -70,20 +70,19 @@ public class BookingServiceImpl implements BookingService {
     public List<Booking> getAllBookings(long userId, String state, int from, int size) {
         isUserExist(userId);
         PageRequest page = PageRequest.of(from > 0 ? from / size : 0, size);
-        LocalDateTime currentTime = LocalDateTime.now();
         switch (getState(state)) {
             case ALL:
                 return bookingRepository
                         .findAllByBookerIdOrderByStartDesc(userId, page);
             case PAST:
                 return bookingRepository
-                        .findAllByBookerIdAndEndBeforeOrderByStartDesc(userId, currentTime, page);
+                        .findAllByBookerIdAndEndBeforeOrderByStartDesc(userId, LocalDateTime.now(), page);
             case CURRENT:
                 return bookingRepository
-                        .findAllByBookerIdAndStartBeforeAndEndAfterOrderByStartDesc(userId, currentTime, currentTime, page);
+                        .findAllByBookerIdAndStartBeforeAndEndAfterOrderByStartDesc(userId, LocalDateTime.now(), LocalDateTime.now(), page);
             case FUTURE:
                 return bookingRepository
-                        .findAllByBookerIdAndStartAfterOrderByStartDesc(userId, currentTime, page);
+                        .findAllByBookerIdAndStartAfterOrderByStartDesc(userId, LocalDateTime.now(), page);
             case WAITING:
                 return bookingRepository
                         .findAllByBookerIdAndStatusOrderByStartDesc(userId, Status.WAITING, page);
@@ -99,20 +98,19 @@ public class BookingServiceImpl implements BookingService {
     public List<Booking> getAllBookingsByOwnerItems(long userId, String state, int from, int size) {
         isUserExist(userId);
         PageRequest page = PageRequest.of(from > 0 ? from / size : 0, size);
-        LocalDateTime currentTime = LocalDateTime.now();
         switch (getState(state)) {
             case ALL:
                 return bookingRepository
                         .findAllByOwnerIdOrderByStartDesc(userId, page);
             case PAST:
                 return bookingRepository
-                        .findAllByOwnerIdAndEndBeforeOrderByStartDesc(userId, currentTime, page);
+                        .findAllByOwnerIdAndEndBeforeOrderByStartDesc(userId, LocalDateTime.now(), page);
             case CURRENT:
                 return bookingRepository
-                        .findAllByOwnerIdAndStartBeforeAndEndAfterOrderByStartDesc(userId, currentTime, currentTime, page);
+                        .findAllByOwnerIdAndStartBeforeAndEndAfterOrderByStartDesc(userId, LocalDateTime.now(), LocalDateTime.now(), page);
             case FUTURE:
                 return bookingRepository
-                        .findAllByOwnerIdAndStartAfterOrderByStartDesc(userId, currentTime, page);
+                        .findAllByOwnerIdAndStartAfterOrderByStartDesc(userId, LocalDateTime.now(), page);
             case WAITING:
                 return bookingRepository
                         .findAllByOwnerIdAndStatusOrderByStartDesc(userId, Status.WAITING, page);

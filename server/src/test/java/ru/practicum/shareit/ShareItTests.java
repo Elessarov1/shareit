@@ -10,8 +10,8 @@ import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 class ShareItTests {
     @Test
     void mainTest() {
-        assertDoesNotThrow(ShareItApp::new);
+        assertDoesNotThrow(ShareItServer::new);
         assertThat(ShareItTests.class).isNotNull();
-        assertDoesNotThrow(() -> ShareItApp.main(new String[]{}));
+        assertDoesNotThrow(() -> ShareItServer.main(new String[]{}));
     }
 }

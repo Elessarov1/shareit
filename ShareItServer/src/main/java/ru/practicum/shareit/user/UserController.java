@@ -27,12 +27,12 @@ public class UserController {
     }
 
     @PostMapping
-    public UserDto addUser(@Validated(UserDto.NewUser.class) @RequestBody UserDto user) {
+    public UserDto addUser(@RequestBody UserDto user) {
         return UserMapper.userToDto(userService.addUser(UserMapper.dtoToUser(user)));
     }
 
     @PatchMapping("/{id}")
-    public UserDto updateUser(@Validated(UserDto.UpdateUser.class) @RequestBody UserDto user, @PathVariable long id) {
+    public UserDto updateUser(@RequestBody UserDto user, @PathVariable long id) {
         return UserMapper.userToDto(userService.updateUser(id, UserMapper.dtoToUser(user)));
     }
 

@@ -13,5 +13,8 @@ import javax.validation.constraints.Size;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class CommentRequestDto {
     Long id;
+
+    @NotBlank
+    @Size(max = 512)
     String text;
 }

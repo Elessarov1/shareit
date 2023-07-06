@@ -10,15 +10,6 @@ import javax.validation.constraints.NotBlank;
 @Builder
 public class UserDto {
     private long id;
-    @NotBlank(groups = {NewUser.class})
     private String name;
-    @Email(groups = {NewUser.class, UpdateUser.class})
-    @NotBlank(groups = {NewUser.class})
     private String email;
-
-    public interface NewUser {
-    }
-
-    public interface UpdateUser {
-    }
 }

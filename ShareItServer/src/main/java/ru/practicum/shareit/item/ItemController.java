@@ -41,7 +41,7 @@ public class ItemController {
 
     @PostMapping
     public ItemDto addItem(@RequestHeader("X-Sharer-User-Id") long ownerId,
-                           @Valid @RequestBody ItemDto itemDto) {
+                           @RequestBody ItemDto itemDto) {
         RequestItem requestItem = null;
         if (itemDto.getRequestId() != null) {
             requestItem = requestItemRepository.findById(itemDto.getRequestId()).orElse(null);
@@ -71,7 +71,7 @@ public class ItemController {
     @PostMapping("/{itemId}/comment")
     public CommentResponseDto addComment(@RequestHeader("X-Sharer-User-Id") long ownerId,
                                          @PathVariable long itemId,
-                                         @Valid @RequestBody CommentRequestDto commentDto) {
+                                         @RequestBody CommentRequestDto commentDto) {
         return CommentMapper.commentToDto(
                 itemService.addComment(ownerId, itemId, CommentMapper.dtoToComment(commentDto)));
     }

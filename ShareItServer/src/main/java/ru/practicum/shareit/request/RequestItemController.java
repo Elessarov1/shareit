@@ -22,19 +22,18 @@ import java.util.stream.Collectors;
 @RequestMapping(path = "/requests")
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
-@Validated
 public class RequestItemController {
     RequestItemService requestItemService;
 
     @PostMapping
-    public RequestItemResponseDto addRequest(@RequestHeader(name = "X-Sharer-User-Id") @NotNull Long ownerId,
-                                             @Valid @RequestBody RequestItemDto request) {
+    public RequestItemResponseDto addRequest(@RequestHeader(name = "X-Sharer-User-Id") Long ownerId,
+                                             @RequestBody RequestItemDto request) {
         RequestItem requestItem = requestItemService.addRequest(ownerId, RequestMapper.dtoToRequestItem(request));
         return RequestMapper.requestItemToResponseDto(requestItem);
     }
 
     @GetMapping
-    public List<RequestItemResponseDto> getOwnerRequests(@RequestHeader("X-Sharer-User-Id") @NotNull Long ownerId) {
+    public List<RequestItemResponseDto> getOwnerRequests(@RequestHeader("X-Sharer-User-Id") Long ownerId) {
         return requestItemService.getOwnerRequests(ownerId)
                 .stream()
                 .map(RequestMapper::requestItemToResponseDto)
@@ -42,9 +41,9 @@ public class RequestItemController {
     }
 
     @GetMapping("/all")
-    public List<RequestItemResponseDto> getAllRequests(@RequestHeader("X-Sharer-User-Id") @NotNull Long ownerId,
-                                                       @RequestParam(defaultValue = "0") @PositiveOrZero int from,
-                                                       @RequestParam(defaultValue = "10") @Positive int size) {
+    public List<RequestItemResponseDto> getAllRequests(@RequestHeader("X-Sharer-User-Id") Long ownerId,
+                                                       @RequestParam(defaultValue = "0")  int from,
+                                                       @RequestParam(defaultValue = "10") int size) {
         return requestItemService.getAllRequests(ownerId, from, size)
                 .stream()
                 .map(RequestMapper::requestItemToResponseDto)
@@ -52,7 +51,7 @@ public class RequestItemController {
     }
 
     @GetMapping("/{requestId}")
-    public RequestItemResponseDto getRequestById(@RequestHeader("X-Sharer-User-Id") @NotNull Long ownerId,
+    public RequestItemResponseDto getRequestById(@RequestHeader("X-Sharer-User-Id") Long ownerId,
                                                  @PathVariable long requestId) {
         return RequestMapper.requestItemToResponseDto(
                 requestItemService.getRequestById(ownerId, requestId));

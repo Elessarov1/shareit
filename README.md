@@ -1,6 +1,10 @@
 <h1 align = "center">Shareit Service</h1>
 
-![](icon.png)
+<div align="center">
+  <a>
+    <img src="icon.png" alt="Logo" width="80" height="80">
+  </a>
+</div>
 
  <h3>Удобный сервис для поиска и аренды необходимых вещей.</h3>
 
